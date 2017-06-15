@@ -1,0 +1,85 @@
+{% extends 'primary_base.html' %}
+
+{% block content %}
+
+<h1 style="text-align: center"> Primary Dashboard </h1>
+<hr />
+<br />
+
+
+<ul class="nav nav-tabs">
+  <li role="presentation"><a href="{% url 'handover_items:primary_need_approval' %}">Pending Approval</a></li>
+  <li role="presentation"><a href="{% url 'handover_items:primary_approved' %}">Approved</a></li>
+  <li role="presentation"><a href="{% url 'handover_items:primary_unclaimed' %}">Unclaimed</a></li>
+  <li role="presentation"><a href="{% url 'handover_items:primary_claimed' %}">Claimed</a></li>
+  <li role="presentation" class="active"><a href="{% url 'handover_items:primary_complete' %}">Complete</a></li>
+  <li role="presentation"><a href="{% url 'handover_items:primary_all' %}">All</a></li>
+</ul>
+
+
+<table class="table table-hover table-responsive">
+  <thead>
+    <tr>
+    <th>Details</th>
+    <th>Owner</th>
+    <th>Support Level</th>
+    <th>Severity</th>
+    <th>Region</th>
+    <th>Engine/Service</th>
+    <th>Case</th>
+    <th>Status</th>
+    <th>Approved?</th>
+    </tr>
+  </thead>
+
+<tbody>
+  {% for handover in handovers %}
+
+  {% if handover.status == 'Complete' %}
+  <tr class="bg-success text-muted">
+  {% else %}
+  <tr>
+  {% endif %}
+
+      <td>
+        <div class="btn-group">
+          <button onClick="document.getElementById('edit').submit()" type="button" class="btn btn-primary">Details</button>
+          <form id="edit" action="{% url 'handover_items:primary_handover_details' handover.id %}">
+            <input type="hidden">
+          </form>
+        </div>
+      </td>
+
+      <td><a href="https://phonetool.amazon.com/users/{{ handover.owner }}">{{ handover.owner }}</a></td>
+      <td>{{ handover.support_level }}</td>
+
+      {% if handover.sev_level == '5' or handover.sev_level == '1' %}
+      <td><span class="label label-danger"><strong>{{ handover.sev_level }}</strong></span></td>
+      {% elif handover.sev_level == '2' %}
+      <td><span class="label label-warning"><strong>{{ handover.sev_level }}</strong></span></td>
+      {% elif handover.sev_level == '3' %}
+      <td><span class="label label-primary"><strong>{{ handover.sev_level }}</strong></span></td>
+      {% elif handover.sev_level == '4' %}
+      <td><span class="label label-default"><strong>{{ handover.sev_level }}</strong></span></td>
+      {% endif %}
+
+      <td>{{ handover.from_region }} <span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span> {{ handover.to_region }}</td>
+      <td>{{ handover.engine }}</td>
+      <td><a href="{{ handover.case_link }}">{{ handover.case_link|truncatechars:35 }}</a></td>
+
+      {% if handover.status == 'Complete' %}
+      <td><span class="label label-success">{{ handover.status }}</span></td>
+      {% else %}
+      <td>{{ handover.status }}</td>
+      {% endif %}
+
+      <td> {{ handover.approved }} </td>
+
+  </tr>
+
+{% endfor %}
+
+  </tbody>
+</table>
+
+{% endblock %}

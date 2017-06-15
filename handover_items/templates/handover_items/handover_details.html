@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+{% block content %}
+
+{% if success %}
+<div class="alert alert-success alert-dismissible" role="alert">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+  <strong>{{ success }}</strong>
+</div>
+<br />
+<br />
+{% endif %}
+
+
+<h1 style="text-align:center;"> Handover Details </h1>
+<br />
+
+
+<table class="table">
+  <tbody>
+    <tr>
+      <th scope="row">Owner</th>
+      <td><a href="https://phonetool.amazon.com/users/{{ handover.owner }}"><span class="glyphicon glyphicon-user" aria-hidden="true"> </span> {{ handover.owner }}</a></td>
+    </tr>
+    {% if handover.owner_hist|length > 0 %}
+      <tr>
+        <th scope="row">Owner History</th>
+        <td>{{ handover.owner_hist }} </td>
+      </tr>
+    {% endif %}
+    <tr>
+      <th scope="row">Created On</th>
+      <td> <span class="glyphicon glyphicon-time" aria-hidden="true"> </span> {{ handover.created_date_pretty }}</td>
+    </tr>
+
+    <tr>
+      <th scope="row">Last Updated:</th>
+      <td> <span class="glyphicon glyphicon-time" aria-hidden="true"> </span> {{ handover.last_updated_pretty }}</td>
+    </tr>
+
+    <tr>
+      <th scope="row">Support Level</th>
+      <td>{{ handover.support_level }}
+    </tr>
+
+    <tr>
+      <th scope="row">Severity</th>
+
+      {% if handover.sev_level == '5' or handover.sev_level == '1' %}
+      <td><span class="label label-danger"><strong>{{ handover.sev_level }}</strong></span></td>
+      {% elif handover.sev_level == '2' %}
+      <td><span class="label label-warning"><strong>{{ handover.sev_level }}</strong></span></td>
+      {% elif handover.sev_level == '3' %}
+      <td><span class="label label-primary"><strong>{{ handover.sev_level }}</strong></span></td>
+      {% elif handover.sev_level == '4' %}
+      <td><span class="label label-default"><strong>{{ handover.sev_level }}</strong></span></td>
+      {% endif %}
+
+    </tr>
+
+    <tr>
+      <th scope="row">Region</th>
+      <td>{{ handover.from_region }} <span class="glyphicon glyphicon-arrow-right" aria-hidden="true"> </span> {{ handover.to_region }}</td>
+    </tr>
+    <tr>
+      <th scope="row">Engine/Service</th>
+      <td>{{ handover.engine }}</td>
+    </tr>
+
+    <tr>
+      <th scope="row">Case</th>
+      <td><span class="glyphicon glyphicon-link" aria-hidden="true"> </span> <a href="{{ handover.case_link }}">{{ handover.case_link }}</a></td>
+    </tr>
+
+    <tr>
+      <th scope="row" class=''>Related Items</th>
+      {% if handover.related_item1 %}
+      <td><span class="glyphicon glyphicon-link" aria-hidden="true"> </span> <a href="{{ handover.related_item1 }}">{{ handover.related_item1 }}</a></td>
+      {% endif %}
+
+      {% if handover.related_item2 %}
+      <td><span class="glyphicon glyphicon-link" aria-hidden="true"> </span> <a href="{{ handover.related_item2 }}">{{ handover.related_item2 }}<a/></td>
+      {% endif %}
+
+      {% if handover.related_item3 %}
+      <td><span class="glyphicon glyphicon-link" aria-hidden="true"> </span> <a href="{{ handover.related_item3 }}">{{ handover.related_item3 }}</a></td>
+
+      {% else %}
+      <td></td>
+      {% endif %}
+    </tr>
+
+    <tr>
+      <th scope="row">Status</th>
+      <td>{{ handover.status }}</td>
+    </tr>
+
+    <tr>
+      <th scope="row">Claimed?</th>
+      <td>{{ handover.claimed }}</td>
+    </tr>
+
+    <tr>
+      <th scope="row">Approved?</th>
+      <td>{{ handover.approved }}</td>
+    </tr>
+
+  </tbody>
+</table>
+
+<br />
+
+<div class="panel panel-primary">
+  <div class="panel-heading">Notes:</div>
+  <div class="panel-body">
+    {{ handover.notes|linebreaks }}
+  </div>
+</div>
+
+<br />
+<br />
+
+
+{% if request.user == handover.owner %}
+
+<button href="#" type="button" class="btn btn-success btn-lg disabled pull-right">Claimed</button>
+
+<button href="#" onClick="document.getElementById('edit').submit()" type="button" class="btn btn-warning btn-lg pull-right" style="margin-right: 20px;">Edit</button>
+<form id="edit" action="{% url 'handover_items:edit' handover.id %}">
+        <input type="hidden">
+</form>
+
+<button href="#" onClick="document.getElementById('markcomplete').submit()" type="button" class="btn btn-default btn-lg pull-left" style="margin-right: 20px;">Mark Complete</button>
+
+<form id="markcomplete" method="POST" action="{% url 'handover_items:markcomplete' handover.id %}">
+  {% csrf_token %}
+        <input type="hidden">
+</form>
+
+
+
+{% elif request.user != handover.owner %}
+<button href="#" onClick="document.getElementById('claim').submit()" type="button" class="btn btn-primary btn-lg center-block">Claim</button>
+<form id="claim" method="POST" action="{% url 'handover_items:claim' handover.id %}">
+  {% csrf_token %}
+        <input type="hidden">
+</form>
+
+<br />
+<br />
+
+{% endif %}
+{% endblock %}

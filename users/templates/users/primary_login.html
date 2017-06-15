@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+  <h1 style="text-align: center">Login as Primary</h1>
+  <hr />
+
+current: {{ current_primary.0.0 }} <br>
+
+day: {{ current_day }}
+
+        <div class="jumbotron">
+          <div class="container">
+              <h1>Hello {{ request.user }},</h1>
+              <p>Looks like you're Profile Primary today (please try to contain your excitement). Hit the button below to login to the Primary Dashboard.</p>
+               <div class="text-center">
+                <p><a href="#" onClick="document.getElementById('login_as_primary').submit()" class="btn btn-primary btn-lg" role="button">Login as Primary!</a></p>
+
+                <form id="login_as_primary" method="POST" action="{% url 'users:login_as_primary' %}">
+                  {% csrf_token %}
+                  <input type="hidden">
+                </form>
+
+
+               </div>
+            </div>
+        </div>
+
+
+
+
+
+{% endblock %}

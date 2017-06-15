@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Submit Handover</h1>
+<hr />
+
+{% if error %}
+<div class="alert alert-danger alert-dismissible" role="alert">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+  <strong>Oops!</strong> <br />
+
+  {{ error }}
+</div>
+<br />
+<br />
+{% endif %}
+
+{% if success %}
+<div class="alert alert-success alert-dismissible" role="alert">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+  <strong>{{ success }}</strong>
+</div>
+<br />
+<br />
+{% endif %}
+
+  <form action="{% url 'handover_items:create' %}" method="post" class="form-horizontal">
+    {% csrf_token %}
+    <fieldset>
+
+      <div class="form-group">
+        <label class="col-lg-2 control-label">Support Level:</label>
+        <div class="col-lg-10">
+          <select name="support_level" class="custom-select">
+            <option value="Enterprise">Enterprise</option>
+            <option value="Business">Business</option>
+            <option value="Developer">Developer</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-lg-2 control-label">Severity:</label>
+        <div class="col-lg-10">
+          <select class="custom-select" name="sev_level">
+            <option value="5">5</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+          </select>
+        </div>
+      </div>
+
+
+      <div class="form-group">
+        <label class="col-lg-2 control-label" name=>Engine/Service:</label>
+        <div class="col-lg-10">
+          <select class="custom-select" name="engine">
+            <option value="MySQL">MySQL</option>
+            <option value="SQL Server">SQL Server</option>
+            <option value="Aurora">Aurora</option>
+            <option value="MariaDB">MariaDB</option>
+            <option value="PostgreSQL">PostgreSQL</option>
+            <option value="Redshift">Redshift</option>
+            <option value="DMS">DMS</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-lg-2 control-label">Case Link:</label>
+        <div class="col-lg-10">
+          <input type="text" name="case_link" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="select" class="col-lg-2 control-label">Related TTs/Cases (Links):</label>
+        <div class="col-lg-10">
+          <input type="text" name="related_item1" /><br/>
+          <input type="text" name="related_item2" /><br/>
+          <input type="text" name="related_item3" /><br/>
+        </div>
+      </div>
+
+
+
+     <div class="form-group">
+        <label for="select" class="col-lg-2 control-label">From Region:</label>
+        <div class="col-lg-10">
+          <select class="custom-select" name="from_region">
+            <option value="SEA">SEA</option>
+            <option value="SYD">SYD</option>
+            <option value="DFW">DFW</option>
+            <option value="IAD">IAD</option>
+            <option value="CPT">CPT</option>
+            <option value="DUB">DUB</option>
+          </select>
+        </div>
+      </div>
+
+
+      <div class="form-group">
+         <label for="select" class="col-lg-2 control-label">To Region:</label>
+         <div class="col-lg-10">
+           <select class="custom-select" name="to_region">
+             <option value="SEA">SEA</option>
+             <option value="SYD">SYD</option>
+             <option value="DFW">DFW</option>
+             <option value="IAD">IAD</option>
+             <option value="CPT">CPT</option>
+             <option value="DUB">DUB</option>
+           </select>
+         </div>
+       </div>
+
+       <div class="form-group">
+          <label for="select" class="col-lg-2 control-label">Attachment:</label>
+          <div class="col-lg-10">
+            <input type="file" name="attachment" hidden></label>
+          </div>
+        </div>
+
+        <div class="form-group">
+           <label for="select" class="col-lg-2 control-label">Status:</label>
+           <div class="col-lg-10">
+             <select class="custom-select" name="status">
+               <option value="Active (Action Needed)">Active (Action Needed)</option>
+               <option value="Pending Customer Response">Pending Customer Response</option>
+               <option value="Pending Amazon Response (TT)">Pending Amazon Response (TT)</option>
+             </select>
+           </div>
+         </div>
+
+
+        <div class="form-group">
+           <label for="select" class="col-lg-2 control-label">Notes:</label>
+           <div class="col-lg-10">
+              <textarea class="form-control" rows="5" name="notes"></textarea>
+            </div>
+        </div>
+
+      <div class="form-group">
+        <div class="col-lg-10 col-lg-offset-2">
+          <button type="reset" onclick="confirm_delete();" class="btn btn-default">Cancel</button>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+      </div>
+    </fieldset>
+  </form>
+
+
+  <script type="text/javascript">
+  function confirm_delete() {
+    if (confirm('Are you sure you want to cancel? Changes will be lost.')) {
+      location.href='{% url 'handover_items:userposts' user.id %}';
+    } else {
+      // Do nothing
+    }
+  }
+  </script>
+
+{% endblock %}

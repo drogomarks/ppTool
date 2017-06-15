@@ -1,0 +1,230 @@
+{% extends 'primary_base.html' %}
+{% block content %}
+
+{% if success %}
+<div class="alert alert-success alert-dismissible" role="alert">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+  <meta http-equiv="refresh" content="1;{% url 'handover_items:primary_handover_details' handover.id %}" >
+  <strong>{{ success }}</strong>
+</div>
+<br />
+<br />
+{% endif %}
+
+{% if error %}
+<div class="alert alert-danger alert-dismissible" role="alert">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+  <strong>{{ error }}</strong>
+</div>
+<br />
+<br />
+{% endif %}
+
+{% if deny  %}
+<div class="alert alert-warning alert-dismissible" role="alert">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <meta http-equiv="refresh" content="1;{% url 'handover_items:primary_handover_details' handover.id %}" >
+  <strong>{{ deny }}</strong>
+</div>
+<br />
+<br />
+{% endif %}
+
+
+<h1 style="text-align:center;"> Handover Details </h1>
+<br />
+
+
+<table class="table">
+  <tbody>
+    <tr>
+      <th scope="row">Owner</th>
+      <td><a href="https://phonetool.amazon.com/users/{{ handover.owner }}"><span class="glyphicon glyphicon-user" aria-hidden="true"> </span> {{ handover.owner }}</a></td>
+    </tr>
+    <tr>
+      <th scope="row">Owner History</th>
+      <td>{{ handover.owner_hist }} </td>
+    </tr>
+    <tr>
+      <th scope="row">Created On</th>
+      <td> <span class="glyphicon glyphicon-time" aria-hidden="true"> </span> {{ handover.created_date_pretty }}</td>
+    </tr>
+
+    <tr>
+      <th scope="row">Last Updated:</th>
+      <td> <span class="glyphicon glyphicon-time" aria-hidden="true"> </span> {{ handover.last_updated_pretty }}</td>
+    </tr>
+
+    <tr>
+      <th scope="row">Support Level</th>
+      <td>{{ handover.support_level }}
+    </tr>
+
+    <tr>
+      <th scope="row">Severity</th>
+
+      {% if handover.sev_level == '5' or handover.sev_level == '1' %}
+      <td><span class="label label-danger"><strong>{{ handover.sev_level }}</strong></span></td>
+      {% elif handover.sev_level == '2' %}
+      <td><span class="label label-warning"><strong>{{ handover.sev_level }}</strong></span></td>
+      {% elif handover.sev_level == '3' %}
+      <td><span class="label label-primary"><strong>{{ handover.sev_level }}</strong></span></td>
+      {% elif handover.sev_level == '4' %}
+      <td><span class="label label-default"><strong>{{ handover.sev_level }}</strong></span></td>
+      {% endif %}
+
+    </tr>
+
+    <tr>
+      <th scope="row">Region</th>
+      <td>{{ handover.from_region }} <span class="glyphicon glyphicon-arrow-right" aria-hidden="true"> </span> {{ handover.to_region }}</td>
+    </tr>
+    <tr>
+      <th scope="row">Engine/Service</th>
+      <td>{{ handover.engine }}</td>
+    </tr>
+
+    <tr>
+      <th scope="row">Case</th>
+      <td><span class="glyphicon glyphicon-link" aria-hidden="true"> </span> <a href="{{ handover.case_link }}">{{ handover.case_link }}</a></td>
+    </tr>
+
+    <tr>
+      <th scope="row" class=''>Related Items</th>
+      {% if handover.related_item1 %}
+      <td><span class="glyphicon glyphicon-link" aria-hidden="true"> </span> <a href="{{ handover.related_item1 }}">{{ handover.related_item1 }}</a></td>
+      {% endif %}
+
+      {% if handover.related_item2 %}
+      <td><span class="glyphicon glyphicon-link" aria-hidden="true"> </span> <a href="{{ handover.related_item2 }}">{{ handover.related_item2 }}<a/></td>
+      {% endif %}
+
+      {% if handover.related_item3 %}
+      <td><span class="glyphicon glyphicon-link" aria-hidden="true"> </span> <a href="{{ handover.related_item3 }}">{{ handover.related_item3 }}</a></td>
+
+      {% else %}
+      <td></td>
+      {% endif %}
+    </tr>
+
+    <tr>
+      <th scope="row">Status</th>
+      <td>{{ handover.status }}</td>
+    </tr>
+
+    <tr>
+      <th scope="row">Claimed?</th>
+      <td>{{ handover.claimed }}</td>
+    </tr>
+
+    <tr>
+      <th scope="row">Approved?</th>
+      <td>{{ handover.approved }}</td>
+    </tr>
+
+  </tbody>
+</table>
+
+<br />
+
+<div class="panel panel-primary">
+  <div class="panel-heading">Notes:</div>
+  <div class="panel-body">
+    {{ handover.notes|linebreaks }}
+  </div>
+</div>
+
+
+{% if handover.approved == True  %}
+<div class="panel panel-success">
+  <div class="panel-heading">Primary Approval Notes:</div>
+  <div class="panel-body">
+    {{ handover.primary_approval_notes|linebreaks }}
+  </div>
+</div>
+
+{% elif handover.approved == False and handover.primary_denial_notes %}
+<div class="panel panel-danger">
+  <div class="panel-heading">Primary Denial Notes:</div>
+  <div class="panel-body">
+    {{ handover.primary_denial_notes|linebreaks }}
+  </div>
+</div>
+{% endif %}
+<br />
+<br />
+
+
+<!-- Approve/Deny form w/Notes feild --->
+
+<div class="panel panel-success">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+             <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Approve
+            </a>
+        </h3>
+    </div>
+    <div id="collapseOne" class="panel-collapse collapse">
+      <div class="panel-body">
+
+
+        <form id="approve" method="POST" action="{% url 'handover_items:primary_approve' handover.id %}">
+          {% csrf_token %}
+
+          <div class="form-group">
+             <label for="select" class="col-lg-2 control-label">Primary Approval Notes:</label>
+             <div class="col-lg-10">
+                <textarea class="form-control"  name="approval_notes" placeholder="Optional">{{ handover.primary_approval_notes}}</textarea>
+                <br />
+                <br />
+              </div>
+          </div>
+                <input type="hidden">
+                <button style="margin-left: 10px;" href="#" onClick="document.getElementById('approve').submit()" type="button" class="btn btn-success pull-right">Confirm Approval</button>
+
+        </form>
+
+
+      </div>
+    </div>
+  </div>
+
+
+  <div class="panel panel-danger">
+      <div class="panel-heading">
+          <h3 class="panel-title">
+              <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+              <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Deny
+              </a>
+          </h3>
+      </div>
+      <div id="collapseTwo" class="panel-collapse collapse">
+        <div class="panel-body">
+
+
+        <form id="deny" method="POST" action="{% url 'handover_items:primary_deny' handover.id %}">
+          {% csrf_token %}
+
+          <div class="form-group">
+             <label for="select" class="col-lg-2 control-label">Primary Denial Notes:</label>
+             <div class="col-lg-10">
+                <textarea class="form-control"  name="denial_notes" placeholder="*Notes only for denails. Please be as specific as possible in addressing what owner must change for approval.">{{ handover.primary_denial_notes }}</textarea>
+                <br />
+                <br />
+              </div>
+          </div>
+                <input type="hidden">
+                <button  href="#" onClick="document.getElementById('deny').submit()" type="button" class="btn btn-danger pull-right">Confirm Deny</button>
+
+        </form>
+
+    </div>
+  </div>
+</div>
+
+<br />
+<br />
+
+
+{% endblock %}

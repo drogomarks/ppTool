@@ -1,0 +1,313 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Edit Handover</h1>
+<hr />
+
+{% if error %}
+<div class="alert alert-danger alert-dismissible" role="alert">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+  <strong>Oops!</strong> <br />
+
+  {{ error }}
+</div>
+<br />
+<br />
+{% endif %}
+
+{% if success %}
+<div class="alert alert-success alert-dismissible" role="alert">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+  <strong>{{ success }}</strong>
+</div>
+<br />
+<br />
+{% endif %}
+
+  <form action="{% url 'handover_items:edit' handover.id %}" method="post" class="form-horizontal">
+    {% csrf_token %}
+    <fieldset>
+
+      <div class="form-group">
+        <label class="col-lg-2 control-label">Support Level:</label>
+        <div class="col-lg-10">
+          <select name="support_level" class="custom-select">
+
+            {% if handover.support_level == 'Enterprise' %}
+            <option value="Enterprise" selected="selected">Enterprise</option>
+            {% else %}
+            <option value="Enterprise">Enterprise</option>
+            {% endif %}
+
+            {% if handover.support_level == 'Business' %}
+            <option value="Business" selected="selected">Business</option>
+            {% else %}
+            <option value="Business">Business</option>
+            {% endif %}
+
+            {% if handover.support_level == 'Developer' %}
+            <option value="Developer" selected="selected">Developer</option>
+            {% else %}
+            <option value="Developer">Developer</option>
+            {% endif %}
+          </select>
+
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-lg-2 control-label">Severity:</label>
+        <div class="col-lg-10">
+          <select class="custom-select" name="sev_level">
+            {% if handover.sev_level == '5' %}
+            <option value="5" selected="selected"><strong>5</strong></option>
+            {% else %}
+            <option value="5">5</option>
+            {% endif %}
+
+            {% if handover.sev_level == '1' %}
+            <option value="1" selected="selected"><strong>1</strong></option>
+            {% else %}
+            <option value="1">1</option>
+            {% endif %}
+
+            {% if handover.sev_level == '2' %}
+            <option value="2" selected="selected"><strong>2</strong></option>
+            {% else %}
+            <option value="2">2</option>
+            {% endif %}
+
+            {% if handover.sev_level == '3' %}
+            <option value="3" selected="selected"><strong>3</strong></option>
+            {% else %}
+            <option value="3">3</option>
+            {% endif %}
+
+            {% if handover.sev_level == '4' %}
+            <option value="4" selected="selected"><strong>4</strong></option>
+            {% else %}
+            <option value="4">4</option>
+            {% endif %}
+          </select>
+        </div>
+      </div>
+
+
+      <div class="form-group">
+        <label class="col-lg-2 control-label">Engine/Service:</label>
+        <div class="col-lg-10">
+          <select class="custom-select" name="engine">
+            {% if handover.engine == 'MySQL' %}
+            <option value="MySQL" selected="selected"><strong>MySQL</strong></option>
+            {% else %}
+            <option value="MySQL">MySQL</option>
+            {% endif %}
+
+            {% if handover.engine == 'SQL Server' %}
+            <option value="SQL Server" selected="selected"><strong>SQL Server</strong></option>
+            {% else %}
+            <option value="SQL Server">SQL Server</option>
+            {% endif %}
+
+            {% if handover.engine == 'Aurora' %}
+            <option value="Aurora" selected="selected"><strong>Aurora</strong></option>
+            {% else %}
+            <option value="Aurora">Aurora</option>
+            {% endif %}
+
+            {% if handover.engine == 'MariaDB' %}
+            <option value="MariaDB" selected="selected"><strong>MariaDB</strong></option>
+            {% else %}
+            <option value="MariaDB">MariaDB</option>
+            {% endif %}
+
+            {% if handover.engine == 'PostgreSQL' %}
+            <option value="PostgreSQL" selected="selected"><strong>PostgreSQL</strong></option>
+            {% else %}
+            <option value="PostgreSQL">PostgreSQL</option>
+            {% endif %}
+
+            {% if handover.engine == 'Redshift' %}
+            <option value="Redshift" selected="selected"><strong>Redshift</strong></option>
+            {% else %}
+            <option value="Redshift">Redshift</option>
+            {% endif %}
+
+            {% if handover.engine == 'DMS' %}
+            <option value="DMS" selected="selected"><strong>DMS</strong></option>
+            {% else %}
+            <option value="DMS">DMS</option>
+            {% endif %}
+
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-lg-2 control-label">Case Link:</label>
+        <div class="col-lg-10">
+          <input type="text" value="{{ handover.case_link }}" name="case_link" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="select" class="col-lg-2 control-label">Related TTs/Cases (Links):</label>
+        <div class="col-lg-10">
+          <input type="text" value="{{ handover.related_item1 }}" name="related_item1" /><br/>
+          <input type="text" value="{{ handover.related_item2 }}"name="related_item2" /><br/>
+          <input type="text" value="{{ handover.related_item3 }}" name="related_item3" /><br/>
+        </div>
+      </div>
+
+
+
+     <div class="form-group">
+        <label for="select" class="col-lg-2 control-label">From Region:</label>
+        <div class="col-lg-10">
+          <select class="custom-select" name="from_region">
+            {% if handover.from_region == 'SEA' %}
+            <option value="SEA" selected="selected"><strong>SEA</strong></option>
+            {% else %}
+            <option value="SEA">SEA</option>
+            {% endif %}
+
+            {% if handover.from_region == 'SYD' %}
+            <option value="SYD" selected="selected"><strong>SYD</strong></option>
+            {% else %}
+            <option value="SYD">SYD</option>
+            {% endif %}
+
+            {% if handover.from_region == 'DFW' %}
+            <option value="DFW" selected="selected"><strong>DFW</strong></option>
+            {% else %}
+            <option value="DFW">DFW</option>
+            {% endif %}
+
+            {% if handover.from_region == 'IAD' %}
+            <option value="IAD" selected="selected"><strong>IAD</strong></option>
+            {% else %}
+            <option value="IAD">IAD</option>
+            {% endif %}
+
+            {% if handover.from_region == 'CPT' %}
+            <option value="CPT" selected="selected"><strong>CPT</strong></option>
+            {% else %}
+            <option value="CPT">CPT</option>
+            {% endif %}
+
+            {% if handover.from_region == 'DUB' %}
+            <option value="DUB" selected="selected"><strong>DUB</strong></option>
+            {% else %}
+            <option value="DUB">DUB</option>
+            {% endif %}
+
+          </select>
+        </div>
+      </div>
+
+
+      <div class="form-group">
+         <label for="select" class="col-lg-2 control-label">To Region:</label>
+         <div class="col-lg-10">
+           <select class="custom-select" name="to_region">
+             {% if handover.to_region == 'SEA' %}
+             <option value="SEA" selected="selected"><strong>SEA</strong></option>
+             {% else %}
+             <option value="SEA">SEA</option>
+             {% endif %}
+
+             {% if handover.to_region == 'SYD' %}
+             <option value="SYD" selected="selected"><strong>SYD</strong></option>
+             {% else %}
+             <option value="SYD">SYD</option>
+             {% endif %}
+
+             {% if handover.to_region == 'DFW' %}
+             <option value="DFW" selected="selected"><strong>DFW</strong></option>
+             {% else %}
+             <option value="DFW">DFW</option>
+             {% endif %}
+
+             {% if handover.to_region == 'IAD' %}
+             <option value="IAD" selected="selected"><strong>IAD</strong></option>
+             {% else %}
+             <option value="IAD">IAD</option>
+             {% endif %}
+
+             {% if handover.to_region == 'CPT' %}
+             <option value="CPT" selected="selected"><strong>CPT</strong></option>
+             {% else %}
+             <option value="CPT">CPT</option>
+             {% endif %}
+
+             {% if handover.to_region == 'DUB' %}
+             <option value="DUB" selected="selected"><strong>DUB</strong></option>
+             {% else %}
+             <option value="DUB">DUB</option>
+             {% endif %}
+           </select>
+         </div>
+       </div>
+
+       <div class="form-group">
+          <label for="select" class="col-lg-2 control-label">Attachment:</label>
+          <div class="col-lg-10">
+            <input type="file" name="attachment" hidden></label>
+          </div>
+        </div>
+
+        <div class="form-group">
+           <label for="select" class="col-lg-2 control-label">Status:</label>
+           <div class="col-lg-10">
+             <select class="custom-select" name="status">
+               {% if handover.status == 'Active (Action Needed)' %}
+               <option value="Active (Action Needed)" selected="selected"><strong>Active (Action Needed)</strong></option>
+               {% else %}
+               <option value="Active (Action Needed)">Active (Action Needed)</option>
+               {% endif %}
+
+               {% if handover.status == 'Pending Customer Response' %}
+               <option value="Pending Customer Response" selected="selected"><strong>Pending Customer Response</strong></option>
+               {% else %}
+               <option value="Pending Customer Response">Pending Customer Response</option>
+               {% endif %}
+
+               {% if handover.status == 'Pending Amazon Response (TT)' %}
+               <option value="Pending Amazon Response (TT)" selected="selected"><strong>Pending Amazon Response (TT)</strong></option>
+               {% else %}
+               <option value="Pending Amazon Response (TT)">Pending Amazon Response (TT)</option>
+               {% endif %}
+
+             </select>
+           </div>
+         </div>
+
+
+        <div class="form-group">
+           <label for="select" class="col-lg-2 control-label">Notes:</label>
+           <div class="col-lg-10">
+              <textarea class="form-control" rows="5" name="notes">{{ handover.notes }}</textarea>
+            </div>
+        </div>
+
+      <div class="form-group">
+        <div class="col-lg-10 col-lg-offset-2">
+          <button type="reset" onclick="confirm_delete();"class="btn btn-default">Cancel</button>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+      </div>
+    </fieldset>
+  </form>
+
+
+  <script type="text/javascript">
+  function confirm_delete() {
+    if (confirm('Are you sure you want to cancel? Changes will be lost.')) {
+      location.href='{% url 'handover_items:userposts' user.id %}';
+    } else {
+      // Do nothing
+    }
+  }
+  </script>
+{% endblock %}

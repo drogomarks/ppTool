@@ -1,0 +1,102 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>RDS Handover (PoC)</title>
+    <link rel="shortcut icon" href="http://zdnet2.cbsistatic.com/hub/i/r/2015/09/17/1e552a7d-ac43-45e3-a30b-2914eb5f6c0b/thumbnail/770x578/4e8f20b889d33b4637811efb7b961b15/icon-aws.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://bootswatch.com/yeti/bootstrap.min.css">
+    <link rel="stylesheet" href="https://s3-us-west-2.amazonaws.com/pptool/sticky-footer-navbar.css">
+
+
+  </head>
+
+
+  <nav class="navbar navbar-default">
+    <div class="container">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="{% url 'home' %}">
+          <img alt="Brand" style="padding-bottom: 2px;" height="30px" width="30px" src="http://blog.snip2code.com/wp-content/uploads/2013/10/database-xxl.png">
+        </a>
+
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navBar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+    </button>
+
+        <a class="navbar-brand" href="{% url 'home' %}">RDS Handover</a>
+      </div>
+    <div class="collapse navbar-collapse" id="navBar">
+          <ul class="nav navbar-nav navbar-right">
+            <li class="nav-item">
+              <a class="nav-link" href="https://phonetool.amazon.com/users/{{ current_primary.0.0 }}" target="_blank">Current Primary: {{ current_primary.0.0 }}</a>
+            </li>
+      {% if user.is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'handover_items:create' %}"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Submit New Handover</a>
+          </li>
+
+
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> {{ user }}<span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="{% url 'handover_items:userposts' user.id %}">Your Handover</a></li>
+            <li role="separator" class="divider"></li>
+            <li><a href="#" onClick="document.getElementById('logout').submit()"><span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>  Logout</a></li>
+          </ul>
+        </li>
+
+      <form id="logout" method="POST" action="{% url 'users:logout' %}">
+        {% csrf_token %}
+              <input type="hidden">
+      </form>
+
+      {% else %}
+      <li><a href="{% url 'users:register' %}"><span class="glyphicon glyphicon-user" aria-hidden="true"> </span> Register</a></li>
+      <li><a href="{% url 'users:login' %}"><span class="glyphicon glyphicon-log-in" aria-hidden="true"> </span> Login</a></li>
+      {% endif %}
+    </ul>
+  </div>
+    </div>
+  </nav>
+
+
+
+  <body>
+
+  <div class='container'>
+
+  {% if request.user.username   == current_primary.0.0 %}
+  <div class="jumbotron">
+    <h1>Hey {{ user }},</h1>
+    <p>Looks like your Profile Primary today (try to contain your excitement). Please proceed to the Primary Dashboard and start handling that handover like a boss!</p>
+    <p><a href="{% url 'handover_items:primary_home' %}" class="btn btn-primary btn-lg">Go to Primary Dashboard!</a></p>
+  </div>
+  {% else %}
+
+
+
+  {% block content %}
+  {% endblock %}
+
+  {% endif %}
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+       <span class="text-muted">Built with quality duct tape and love by <a href="https://phonetool.amazon.com/users/marksaws">marksaws@</a> and <a href="https://phonetool.amazon.com/users/jhhann">jhhann@</a></span></li>
+    </div>
+  </footer>
+
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  </body>
+</html>

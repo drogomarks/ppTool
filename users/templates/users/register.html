@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+  <h1>Register Your Alias</h1>
+  <hr />
+
+  {% if error %}
+  <div class="alert alert-danger alert-dismissible" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <strong>Oops!</strong> <br />
+
+    {{ error }}
+  </div>
+  <br />
+  <br />
+  {% endif %}
+
+  {% if success %}
+  <div class="alert alert-success alert-dismissible" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <strong>{{ success }}</strong>
+  </div>
+  <br />
+  <br />
+  {% endif %}
+
+
+  <form action="{% url 'users:register' %}" method="post">
+   {% csrf_token %}
+
+
+      <div class="form-group row">
+        <label class="col-sm-2 col-form-label">AWS Alias:</label>
+        <div class="col-sm-10">
+          <input type="text" name="alias" placeholder=" your aws alias" />
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-2 col-form-label">Password:</label>
+        <div class="col-sm-10">
+          <input type="password" name="password1" />
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label class="col-sm-2 col-form-label">Confirm Password:</label>
+        <div class="col-sm-10">
+          <input type="password" name="password2" />
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label class="col-sm-2 col-form-label"></label>
+        <div class="offset-sm-2 col-sm-10">
+          <button type="submit" class="btn btn-primary">Register</button>
+        </div>
+      </div>
+
+    </form>
+
+    {% endblock %}

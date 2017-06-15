@@ -1,0 +1,118 @@
+{% load staticfiles %}
+
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Primary View (PoC)</title>
+    <link rel="shortcut icon" href="http://zdnet2.cbsistatic.com/hub/i/r/2015/09/17/1e552a7d-ac43-45e3-a30b-2914eb5f6c0b/thumbnail/770x578/4e8f20b889d33b4637811efb7b961b15/icon-aws.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://bootswatch.com/paper/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'css/primary-footer.css' %}">
+
+
+  </head>
+
+  {% if request.user.username == current_primary.0.0 %}
+
+  <nav class="navbar navbar-default">
+    <div class="container">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="{% url 'handover_items:primary_home' %}">
+          <img alt="Brand" style="padding-bottom: 2px;" height="30px" width="30px" src="https://cdn2.iconfinder.com/data/icons/security-2-1/512/forum_administrator-512.png">
+        </a>
+
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navBar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+    </button>
+
+        <a class="navbar-brand" href="{% url 'handover_items:primary_need_approval' %}">Welcome, {{ user }}!</a>
+        </a>
+      </div>
+    <div class="collapse navbar-collapse" id="navBar">
+          <ul class="nav navbar-nav navbar-right">
+      {% if user.is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'handover_items:create' %}"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Create Handover</a>
+          </li>
+
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-briefcase" aria-hidden="true"></span> Primary Tools<span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <li><a href="https://aws-support-bbgnc.amazon.com/explorer/index.html" target="_blank">BBGNC</a></li>
+              <li><a href="https://tt.amazon.com/search?assigned_group=AWS+Database+Profile+Primary&assigned_individual=&building_id=&case_type=&category=AWS&cc_email=&create_date=&exact_bq=&exclude_bq=&impact=&keyword_bq=&login_name=&modified_date=&or_bq1=&or_bq2=&or_bq3=&phrase_search_text=&requester_login=&search=Search!&status=Assigned%3BResearching%3BWork+In+Progress&tags=&type=" target="_blank">Primary TT Queue</a></li>
+            </ul>
+          </li>
+
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> {{ user }}<span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="#" onClick="document.getElementById('logout').submit()"><span class="glyphicon glyphicon-log-out" aria-hidden="true"></span> Logout</a></li>
+          </ul>
+        </li>
+
+      <form id="logout" method="POST" action="{% url 'users:logout' %}">
+        {% csrf_token %}
+              <input type="hidden">
+      </form>
+
+      {% else %}
+      <li><a href="{% url 'users:register' %}"><span class="glyphicon glyphicon-user" aria-hidden="true"> </span> Register</a></li>
+      <li><a href="{% url 'users:login' %}"><span class="glyphicon glyphicon-log-in" aria-hidden="true"> </span> Login</a></li>
+      {% endif %}
+    </ul>
+  </div>
+    </div>
+  </nav>
+
+
+
+  <body>
+
+  <div class='container'>
+
+  {% block content %}
+  {% endblock %}
+
+
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+       <span class="text-muted">Built with quality duct tape and love by <a href="https://phonetool.amazon.com/users/marksaws">marksaws@</a></span> and <a href="https://phonetool.amazon.com/users/jhhann">jhhann@</a></span></li>
+            {% if user.is_authenticated %}
+            <a><span class="text-muted pull-right">{{ user }} logged in as primary</a>
+            {% endif %}
+
+    </div>
+  </footer>
+
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  </body>
+
+{% else %}
+  <body>
+
+  <div class='container'>
+
+    <div style="margin-top: 15%" class="jumbotron">
+      <h1>Uh oh!</h1>
+      <p>Doesn't look like you are the Profile Primary today. :(  {{ current_primary.0.0 }} is.</p>
+      <p><a class="btn btn-primary btn-lg" href="{% url 'handover_items:unclaimed' %}">Back to Hompage</a></p>
+    </div>
+
+  </div>
+
+</body>
+
+</html>
+{% endif %}
