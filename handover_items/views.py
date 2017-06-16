@@ -110,8 +110,30 @@ def complete(request):
     return render(request, 'handover_items/complete.html', {'handovers': handovers, 'current_primary' : current_primary})
 
 def handover_details(request, handover_id):
+
+    now = datetime.datetime.now()
+
+    current_day = now.strftime("%A")
+    if current_day == "Monday":
+        current_day = 'mon'
+    elif current_day == "Tuesday":
+        current_day = 'tues'
+    elif current_day == "Wednesday":
+        current_day = 'wed'
+    elif current_day == "Thursday":
+        current_day = 'thurs'
+    elif current_day == "Friday":
+        current_day = 'fri'
+    elif current_day == "Saturday":
+        current_day = 'sat'
+    elif current_day == "Sunday":
+        current_day = 'sun'
+
+    current_primary = Region_Schedule.objects.filter(sched_region='SEA').values_list(current_day)
+
+
     handover = get_object_or_404(Handover, pk=handover_id)
-    return render(request, 'handover_items/handover_details.html', {'handover':handover})
+    return render(request, 'handover_items/handover_details.html', {'handover':handover, 'current_primary' : current_primary})
 
 ######## Primay stuff  #####
 
@@ -145,8 +167,30 @@ def primary_need_approval(request):
     return render(request, 'handover_items/primary_need_approval.html', {'handovers': handovers, 'current_primary' : current_primary})
 
 def primary_approved(request):
+
+    now = datetime.datetime.now()
+
+    current_day = now.strftime("%A")
+    if current_day == "Monday":
+        current_day = 'mon'
+    elif current_day == "Tuesday":
+        current_day = 'tues'
+    elif current_day == "Wednesday":
+        current_day = 'wed'
+    elif current_day == "Thursday":
+        current_day = 'thurs'
+    elif current_day == "Friday":
+        current_day = 'fri'
+    elif current_day == "Saturday":
+        current_day = 'sat'
+    elif current_day == "Sunday":
+        current_day = 'sun'
+
+    current_primary = Region_Schedule.objects.filter(sched_region='SEA').values_list(current_day)
+
+
     handovers = Handover.objects.filter(approved=True).order_by('-created_date').exclude(status="Complete")
-    return render(request, 'handover_items/primary_approved.html', {'handovers': handovers})
+    return render(request, 'handover_items/primary_approved.html', {'handovers': handovers, 'current_primary' : current_primary})
 
 def primary_all(request):
     handovers = Handover.objects.order_by('-created_date')
@@ -165,8 +209,29 @@ def primary_complete(request):
     return render(request, 'handover_items/primary_complete.html', {'handovers': handovers})
 
 def primary_handover_details(request, handover_id):
+
+    now = datetime.datetime.now()
+
+    current_day = now.strftime("%A")
+    if current_day == "Monday":
+        current_day = 'mon'
+    elif current_day == "Tuesday":
+        current_day = 'tues'
+    elif current_day == "Wednesday":
+        current_day = 'wed'
+    elif current_day == "Thursday":
+        current_day = 'thurs'
+    elif current_day == "Friday":
+        current_day = 'fri'
+    elif current_day == "Saturday":
+        current_day = 'sat'
+    elif current_day == "Sunday":
+        current_day = 'sun'
+
+    current_primary = Region_Schedule.objects.filter(sched_region='SEA').values_list(current_day)
+
     handover = get_object_or_404(Handover, pk=handover_id)
-    return render(request, 'handover_items/primary_handover_details.html', {'handover':handover})
+    return render(request, 'handover_items/primary_handover_details.html', {'handover':handover, 'current_primary' : current_primary})
 
 def primary_approve(request, handover_id):
     if request.method == 'POST':
@@ -201,6 +266,7 @@ def primary_deny(request, handover_id):
 def create(request):
 
     now = datetime.datetime.now()
+
     current_day = now.strftime("%A")
     if current_day == "Monday":
         current_day = 'mon'
@@ -217,11 +283,12 @@ def create(request):
     elif current_day == "Sunday":
         current_day = 'sun'
 
+    current_primary = Region_Schedule.objects.filter(sched_region='SEA').values_list(current_day)
+
+
     current_user = request.user
     current_user_email = "%s@amazon.com" % current_user
 
-    current_primary = Region_Schedule.objects.filter(sched_region='SEA').values_list(current_day)
-    current_primary = current_primary[0][0]
     current_primary_email = "%s@amazon.com" % current_primary
 
     # If the method is POST
@@ -266,16 +333,37 @@ def create(request):
                 fail_silently=False,
             )
 
-            return render(request, 'handover_items/create.html', {'success' : 'Handover submitted for approval by Primary.'})
+            return render(request, 'handover_items/create.html', {'success' : 'Handover submitted for approval by Primary.', 'current_primary' : current_primary })
         else:
-            return render(request, 'handover_itmes/create.html', {'error' : 'ERROR: Case Link is required to create a handover item.'})
+            return render(request, 'handover_itmes/create.html', {'error' : 'ERROR: Case Link is required to create a handover item.', 'current_primary' : current_primary})
     else:
-        return render(request, 'handover_items/create.html')
+        return render(request, 'handover_items/create.html', {'current_primary' : current_primary})
 
 def userposts(request, fk):
+    now = datetime.datetime.now()
+
+    current_day = now.strftime("%A")
+    if current_day == "Monday":
+        current_day = 'mon'
+    elif current_day == "Tuesday":
+        current_day = 'tues'
+    elif current_day == "Wednesday":
+        current_day = 'wed'
+    elif current_day == "Thursday":
+        current_day = 'thurs'
+    elif current_day == "Friday":
+        current_day = 'fri'
+    elif current_day == "Saturday":
+        current_day = 'sat'
+    elif current_day == "Sunday":
+        current_day = 'sun'
+
+    current_primary = Region_Schedule.objects.filter(sched_region='SEA').values_list(current_day)
+
+
     handovers = Handover.objects.filter(owner__id=fk).order_by('-created_date')
     owner = User.objects.get(pk=fk)
-    return render(request, 'handover_items/userposts.html', {'handovers':handovers, 'owner': owner })
+    return render(request, 'handover_items/userposts.html', {'handovers':handovers, 'owner': owner, 'current_primary':current_primary })
 
 @login_required
 def claim(request, handover_id):
